@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="STILOQ — Diseño, desarrollo, producción y comercialización textil B2B. Stocks, fabricación y distribución de marcas. España, red global."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <title>STILOQ | Creating value for a better tomorrow, together</title>
+    <!-- Classy Vogue: display / logo (revisar licencia comercial en variatype.com si uso es corporativo) -->
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+    <link href="https://fonts.cdnfonts.com/css/classy-vogue" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css?v=about-carousel-copy-2" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+
+    <!-- ========== HEADER: editar enlaces del menú aquí ========== -->
+    <header class="site-header" id="header" data-header>
+      <div class="site-header__inner">
+        <a class="logo" href="#inicio" aria-label="STILOQ — Inicio">
+          <span class="logo__text">STILOQ</span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          data-nav-toggle
+        >
+          <span class="nav-toggle__bar"></span>
+          <span class="nav-toggle__bar"></span>
+        </button>
+        <nav class="site-nav" id="site-nav" data-site-nav>
+          <ul class="site-nav__list">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#quienes-somos">Quiénes somos</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#area-clientes">Área clientes</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ========== 1. HOME / HERO ==========
+           Imagen local: sustituye assets/hero.jpg por tu archivo (mismo nombre) o cambia src y alt. -->
+      <section class="hero section section--dark" id="inicio" data-animate data-home-hero>
+        <div class="hero__media" aria-hidden="true">
+          <video
+            class="hero__video"
+            data-home-hero-video
+            data-src="assets/hero-scrub.mp4"
+            poster="assets/hero.jpg"
+            preload="metadata"
+            muted
+            playsinline
+          ></video>
+          <img
+            class="hero__bg"
+            src="assets/hero.jpg"
+            alt="STILOQ — ambiente moda y textil"
+            width="2000"
+            height="1333"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <div class="hero__overlay"></div>
+        </div>
+        <div class="container hero__content">
+          <p class="eyebrow">Industria textil · Moda · B2B</p>
+          <h1 class="hero__title">STILOQ</h1>
+          <p class="hero__tagline">Creating value for a better tomorrow, together.</p>
+          <p class="hero__lead">
+            Diseñamos, desarrollamos, producimos y comercializamos soluciones textiles para marcas,
+            retailers y operadores internacionales de moda.
+          </p>
+          <p class="hero__text">
+            Con <span data-stiloq-years>15</span> años de experiencia en la industria textil, STILOQ conecta creatividad, red
+            internacional y oportunidades comerciales para impulsar el crecimiento de nuestros
+            clientes.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#servicios">Explorar servicios</a>
+            <a class="btn btn--ghost" href="#area-clientes">Acceso clientes B2B</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 1b. AÑOS / ETHOS ========== -->
+      <section
+        class="years-banner section section--light"
+        id="anos-experiencia"
+        data-years-banner
+        data-years-base="15"
+        data-years-base-year="2026"
+        aria-label="Años de experiencia STILOQ"
+      >
+        <div class="years-banner__stage">
+          <div class="years-banner__stack">
+            <p class="years-banner__mega" aria-hidden="true">
+              <span class="years-banner__mega-num" data-years-counter-value>15</span
+              ><span class="years-banner__mega-label"> AÑOS</span>
+            </p>
+            <p class="years-banner__tagline">
+              Creating value for a better tomorrow, together.
+            </p>
+          </div>
+          <p class="visually-hidden" data-years-announce>
+            STILOQ cuenta con 15 años de experiencia en la industria textil.
+          </p>
+        </div>
+      </section>
+
+      <!-- ========== 2. QUIÉNES SOMOS (galería + texto, estilo editorial) ========== -->
+      <section class="section section--light about-editorial" id="quienes-somos">
+        <div class="about-editorial__stage">
+          <div class="about-editorial__gallery" data-about-gallery>
+            <div class="about-editorial__viewport">
+              <!-- 8 medios con texto superpuesto × 2 (bucle) -->
+              <div class="about-editorial__track" data-about-track>
+                <div class="about-editorial__frame" data-showcase-category="mujer">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Moda mujer"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--tagline">
+                    <p class="about-editorial__copy-tagline">Designing a better future, together.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="hombre">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Moda hombre"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Creemos en una moda que va más allá del producto.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="nino">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1503454537844-983a37ef61d1?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Niño"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Una moda que conecta, transforma y genera valor.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="nina">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Niña"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Diseñamos, desarrollamos y llevamos ideas al mundo, combinando creatividad, operación y visión global.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="hogar">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Hogar"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Trabajamos como partners.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="calzado-accesorios">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Calzado y accesorios"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Pensamos a largo plazo.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="licenciados">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Licenciados"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Actuamos con responsabilidad.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="utensilios-electro">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Utensilios y electro"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--close">
+                    <p class="about-editorial__copy-line">Porque el futuro de la industria no solo se construye.</p>
+                    <p class="about-editorial__copy-accent">Se diseña.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="mujer">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Moda mujer"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--tagline">
+                    <p class="about-editorial__copy-tagline">Designing a better future, together.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="hombre">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Moda hombre"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Creemos en una moda que va más allá del producto.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="nino">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1503454537844-983a37ef61d1?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Niño"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Una moda que conecta, transforma y genera valor.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="nina">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Niña"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Diseñamos, desarrollamos y llevamos ideas al mundo, combinando creatividad, operación y visión global.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="hogar">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Hogar"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Trabajamos como partners.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="calzado-accesorios">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Calzado y accesorios"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Pensamos a largo plazo.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="licenciados">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1562157873-818bc0726f68?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Licenciados"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--default">
+                    <p class="about-editorial__copy-line">Actuamos con responsabilidad.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="about-editorial__frame" data-showcase-category="utensilios-electro">
+                  <div class="about-editorial__media-wrap">
+                    <img
+                      class="about-editorial__media"
+                      src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=960&h=1280&q=80"
+                      alt="Utensilios y electro"
+                      width="960"
+                      height="1280"
+                      loading="lazy"
+                      decoding="async"
+                      data-showcase-fallback
+                    />
+                  </div>
+                  <div class="about-editorial__shade" aria-hidden="true"></div>
+                  <div class="about-editorial__overlay">
+                    <div class="about-editorial__copy about-editorial__copy--close">
+                    <p class="about-editorial__copy-line">Porque el futuro de la industria no solo se construye.</p>
+                    <p class="about-editorial__copy-accent">Se diseña.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container about-editorial__below" data-animate>
+          <div class="about-editorial__statements">
+            <div class="about-editorial__statement">
+              <h3 class="about-editorial__heading">Misión</h3>
+              <div class="prose about-editorial__prose">
+                <p>Diseñar y desarrollar soluciones que impulsen una industria de la moda más eficiente, responsable y conectada.</p>
+                <p>En STILOQ creemos que los grandes retos del sector requieren colaboración. Por eso trabajamos junto a marcas y retailers para transformar ideas en productos, optimizar procesos y generar oportunidades que reduzcan el impacto, mejoren la eficiencia y aporten valor en cada etapa de la cadena.</p>
+                <p>Desde el diseño hasta la comercialización, integramos creatividad, producción global y visión estratégica para construir un modelo más ágil, consciente y sostenible.</p>
+              </div>
+            </div>
+            <div class="about-editorial__statement">
+              <h3 class="about-editorial__heading">Visión</h3>
+              <div class="prose about-editorial__prose">
+                <p>Contribuir a una industria de la moda que genere un impacto positivo en las personas, las comunidades y el entorno.</p>
+                <p>Entendemos la moda como un ecosistema global con capacidad de transformar realidades. Cada producto, cada proceso y cada decisión representa una oportunidad para avanzar hacia un modelo más equilibrado y responsable.</p>
+                <p>Aspiramos a ser un partner clave en esta evolución, conectando talento, innovación y operaciones a escala internacional para impulsar un crecimiento sostenible y duradero en la industria.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--light values-section" id="nuestros-valores" data-values-section data-animate>
+        <div class="container values-layout">
+          <div class="values-layout__intro">
+            <h2 class="section__title values-layout__title">Nuestros valores</h2>
+          </div>
+          <div class="values-matrix" data-values-matrix aria-label="Logo SQ y valores STILOQ">
+            <article class="values-tile values-tile--tl" tabindex="0">
+              <div class="values-tile__media" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&h=800&q=80" alt="" width="800" height="800" loading="lazy" decoding="async" />
+                <div class="values-tile__scrim"></div>
+              </div>
+              <div class="values-tile__logo" aria-hidden="true"></div>
+              <div class="values-tile__face values-tile__face--title"><h3 class="values-tile__heading">Ser un verdadero partner</h3></div>
+              <div class="values-tile__face values-tile__face--detail">
+                <p class="values-tile__lead">Más que proveedores, somos aliados.</p>
+                <p class="values-tile__text">Trabajamos de forma cercana con nuestros clientes para crear valor real,</p>
+                <p class="values-tile__aux">compartiendo objetivos y construyendo relaciones basadas en confianza y resultados.</p>
+              </div>
+            </article>
+            <article class="values-tile values-tile--tr" tabindex="0">
+              <div class="values-tile__media" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1558171813-14641f3c0e43?auto=format&fit=crop&w=800&h=800&q=80" alt="" width="800" height="800" loading="lazy" decoding="async" />
+                <div class="values-tile__scrim"></div>
+              </div>
+              <div class="values-tile__logo" aria-hidden="true"></div>
+              <div class="values-tile__face values-tile__face--title"><h3 class="values-tile__heading">Evolucionar constantemente</h3></div>
+              <div class="values-tile__face values-tile__face--detail">
+                <p class="values-tile__lead">Creemos en la mejora continua.</p>
+                <p class="values-tile__text">Invertimos en talento, innovación y conocimiento para adaptarnos, anticiparnos al mercado y contribuir a una industria de la moda más responsable y sostenible.</p>
+              </div>
+            </article>
+            <article class="values-tile values-tile--bl" tabindex="0">
+              <div class="values-tile__media" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=800&h=800&q=80" alt="" width="800" height="800" loading="lazy" decoding="async" />
+                <div class="values-tile__scrim"></div>
+              </div>
+              <div class="values-tile__logo" aria-hidden="true"></div>
+              <div class="values-tile__face values-tile__face--title"><h3 class="values-tile__heading">Actuar con transparencia</h3></div>
+              <div class="values-tile__face values-tile__face--detail">
+                <p class="values-tile__lead">La claridad guía nuestras decisiones.</p>
+                <p class="values-tile__text">Mantenemos una comunicación abierta en cada etapa del proceso, generando confianza y permitiendo tomar decisiones informadas con impacto positivo.</p>
+              </div>
+            </article>
+            <article class="values-tile values-tile--br" tabindex="0">
+              <div class="values-tile__media" aria-hidden="true">
+                <img src="https://images.unsplash.com/photo-1529333166437-7776ae4842d4?auto=format&fit=crop&w=800&h=800&q=80" alt="" width="800" height="800" loading="lazy" decoding="async" />
+                <div class="values-tile__scrim"></div>
+              </div>
+              <div class="values-tile__logo" aria-hidden="true"></div>
+              <div class="values-tile__face values-tile__face--title"><h3 class="values-tile__heading">Crear juntos</h3></div>
+              <div class="values-tile__face values-tile__face--detail">
+                <p class="values-tile__lead">La colaboración es nuestro motor.</p>
+                <p class="values-tile__text">Trabajamos como una extensión de nuestros clientes, combinando experiencia, visión global y creatividad para transformar ideas en oportunidades.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--armani" id="servicios" data-animate>
+        <div class="container">
+          <header class="section__header">
+            <h2 class="section__title">Servicios</h2>
+            <p class="section__intro">Dos líneas de negocio que agrupan stocks, marcas y fabricación, con operación coordinada desde España.</p>
+          </header>
+        </div>
+        <div class="servicios-panels">
+          <article class="servicios-panel" data-animate>
+            <div class="servicios-panel__media">
+              <img src="https://images.unsplash.com/photo-1550614000-4b9519e02bb4?auto=format&fit=crop&w=1600&q=80" alt="SQ Apparel" width="1600" height="1067" loading="lazy" />
+            </div>
+            <div class="servicios-panel__scrim" aria-hidden="true"></div>
+            <div class="servicios-panel__content">
+              <h3 class="servicios-panel__title">SQ Apparel</h3>
+              <a class="btn btn--outline-panel" href="sq-moda.html">Ver más</a>
+            </div>
+          </article>
+          <article class="servicios-panel" data-animate>
+            <div class="servicios-panel__media">
+              <img src="https://images.unsplash.com/photo-1570618154047-229a5db95d21?auto=format&fit=crop&w=1600&q=80" alt="SQ Home" width="1600" height="1067" loading="lazy" />
+            </div>
+            <div class="servicios-panel__scrim" aria-hidden="true"></div>
+            <div class="servicios-panel__content">
+              <h3 class="servicios-panel__title">SQ Home</h3>
+              <a class="btn btn--outline-panel" href="sq-hogar.html">Ver más</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section--portal" id="area-clientes" data-animate>
+        <div class="container portal">
+          <div class="portal__frame">
+            <p class="portal__eyebrow">Private access</p>
+            <h2 class="portal__title">Client Access</h2>
+            <p class="portal__text">Un espacio privado para clientes y partners donde acceder a oportunidades, catálogos, stocks disponibles, colecciones, documentación comercial y seguimiento de proyectos.</p>
+            <div class="portal__actions">
+              <a class="btn btn--primary" href="#contacto">Acceder al portal</a>
+              <a class="btn btn--outline-light" href="#contacto">Solicitar acceso B2B</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--dark section--contact" id="contacto" data-animate>
+        <div class="container contact-layout">
+          <div class="contact-layout__intro">
+            <h2 class="section__title section__title--light">Let's create value together</h2>
+            <p class="prose prose--on-dark">¿Buscas desarrollar una colección, acceder a stocks internacionales o expandir una marca en nuevos mercados? Hablemos.</p>
+          </div>
+          <form class="contact-form" id="contact-form" novalidate>
+            <div class="form-row"><label for="nombre">Nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required /></div>
+            <div class="form-row"><label for="empresa">Empresa</label><input id="empresa" name="empresa" type="text" autocomplete="organization" required /></div>
+            <div class="form-row"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required /></div>
+            <div class="form-row"><label for="pais">País</label><input id="pais" name="pais" type="text" autocomplete="country-name" required /></div>
+            <div class="form-row"><label for="tipo">Tipo de consulta</label><select id="tipo" name="tipo" required><option value="" disabled selected>Selecciona una opción</option><option value="apparel">SQ Apparel</option><option value="home">SQ Home</option><option value="other">Otra</option></select></div>
+            <div class="form-row"><label for="mensaje">Mensaje</label><textarea id="mensaje" name="mensaje" rows="5" required></textarea></div>
+            <button class="btn btn--primary btn--full" type="submit">Enviar consulta</button>
+            <p class="form-feedback" data-form-feedback hidden></p>
+          </form>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container site-footer__grid">
+        <div class="site-footer__brand">
+          <a class="site-footer__logo-link" href="#inicio" aria-label="STILOQ — Inicio"><span class="logo__text logo__text--footer">STILOQ</span></a>
+          <p class="site-footer__tagline">Creating value for a better tomorrow, together.</p>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Navegación</h3>
+          <ul class="site-footer__links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#quienes-somos">Quiénes somos</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#area-clientes">Área clientes</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h3 class="site-footer__heading">Contacto</h3>
+          <p class="site-footer__contact">Barcelona, España<br /><a href="mailto:info@stiloq.com">info@stiloq.com</a></p>
+        </div>
+      </div>
+      <div class="site-footer__bar"><div><small>© <span data-year></span> STILOQ. Todos los derechos reservados.</small></div></div>
+    </footer>
+    <script src="js/main.js" defer></script>
+  </body>
+</html>

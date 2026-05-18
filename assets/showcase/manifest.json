@@ -1,0 +1,26 @@
+{
+  "calzado-accesorios": {
+    "file": "1571572_Automatic_Automation_1080x1920.mp4",
+    "type": "video"
+  },
+  "hogar": {
+    "file": "0_Lady_Shopping_1080x1920.mp4",
+    "type": "video"
+  },
+  "hombre": {
+    "file": "0_Aisle_High_1080x1920.mp4",
+    "type": "video"
+  },
+  "licenciados": {
+    "file": "0_Hand_Shopping_1080x1920.mp4",
+    "type": "video"
+  },
+  "mujer": {
+    "file": "568999_Wok_Empty_1080x1920.mp4",
+    "type": "video"
+  },
+  "nino": {
+    "file": "0_Industrial_Machine_Fabric_Cutting_1080x1920.mp4",
+    "type": "video"
+  }
+}
