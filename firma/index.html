@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de firma STILOQ</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <h1>Generador de firma de correo</h1>
+    <p class="subtitle">STILOQ — Vista previa y copia HTML compatible con clientes de correo</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel panel-form">
+      <h2>Datos de la firma</h2>
+      <form id="signature-form" autocomplete="off">
+        <fieldset>
+          <legend>Contacto</legend>
+          <label>
+            Nombre completo
+            <input type="text" name="nombre" value="Mario Carruyo" required>
+          </label>
+          <label>
+            Cargo
+            <input type="text" name="cargo" value="Product Manager.">
+          </label>
+          <label>
+            Correo electrónico
+            <input type="email" name="email" value="Product@stiloq.net" required>
+          </label>
+          <label>
+            Teléfono móvil
+            <input type="text" name="telefono" value="+34 653 600 982">
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="mostrarMovil" checked>
+            Mostrar prefijo «Móvil:»
+          </label>
+          <label>
+            Sitio web
+            <input type="text" name="web" value="www.stiloq.net">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Dirección</legend>
+          <label>
+            Línea 1
+            <input type="text" name="direccion1" value="Plaça Ausiàs March, 1 – Oficina 4">
+          </label>
+          <label>
+            Línea 2
+            <input type="text" name="direccion2" value="08196 – Sant Cugat del Vallès, Barcelona">
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>Logo</legend>
+          <label>
+            Ancho del logo (px)
+            <input type="number" name="logoAncho" value="190" min="80" max="320">
+          </label>
+          <label>
+            Archivo PNG (opcional)
+            <input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp">
+          </label>
+          <div class="logo-publish-row">
+            <button type="button" id="btn-publish-logo" class="btn btn-primary">Publicar logo en stiloq.net</button>
+          </div>
+          <p id="logo-publish-status" class="logo-publish-status" aria-live="polite"></p>
+          <label>
+            URL del logo (se rellena al publicar)
+            <input type="url" name="logoUrl" id="logo-url" value="https://www.stiloq.net/assets/logo-firma.png" placeholder="https://www.stiloq.net/assets/logo-firma.png" autocomplete="off" required>
+          </label>
+          <p id="logo-url-status" class="logo-url-status" aria-live="polite"></p>
+          <p class="hint">Versión web: el logo usa la URL pública. «Publicar logo» solo funciona en la versión local con servidor.</p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Pie de firma</legend>
+          <label class="checkbox">
+            <input type="checkbox" name="mostrarAvisos" checked>
+            Avisos de confidencialidad (gris)
+          </label>
+          <label class="checkbox">
+            <input type="checkbox" name="mostrarEco" checked>
+            Mensaje medioambiental (verde)
+          </label>
+          <label>
+            Texto del mensaje verde
+            <textarea name="mensajeEco" rows="2">Evita imprimir este mensaje si no es estrictamente necesario. De esta manera ahorras agua, energía y recursos forestales.</textarea>
+          </label>
+        </fieldset>
+      </form>
+    </section>
+
+    <section class="panel panel-preview">
+      <div class="preview-header">
+        <h2>Vista previa</h2>
+        <div class="actions">
+          <button type="button" id="btn-copy" class="btn btn-primary">Copiar para Outlook</button>
+          <button type="button" id="btn-open-copy" class="btn btn-secondary">Abrir para copiar</button>
+          <button type="button" id="btn-download" class="btn btn-secondary">Descargar .html</button>
+        </div>
+      </div>
+      <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+
+      <div class="outlook-help">
+        <strong>Outlook para Mac — importante</strong>
+        <ol>
+          <li>Pega la firma en <strong>Configuración → Firmas</strong>, no en un correo nuevo.</li>
+          <li><strong>Desmarca</strong> «Usar siempre mi tipo de letra predefinido (Helvetica 12)».</li>
+          <li>Pulsa <strong>Copiar para Outlook</strong> y Cmd+V en el editor de firmas.</li>
+          <li>Si el logo no aparece: arrastra <code>assets/logo.png</code> al cuadro de firma, o pon una URL pública en «URL del logo».</li>
+          <li>Tras pegar, haz clic en el logo y en la barra de Outlook cambia «Tamaño de la imagen» de <strong>Tamaño real</strong> a un tamaño fijo (~190 px). Si no, al enviar el correo se deforma.</li>
+          <li>Alternativa: <strong>Abrir para copiar</strong> → Cmd+A → Cmd+C → pegar en Firmas.</li>
+        </ol>
+      </div>
+
+      <div class="preview-frame">
+        <div id="preview" class="preview-content"></div>
+      </div>
+
+      <details class="html-source">
+        <summary>Código HTML generado</summary>
+        <textarea id="html-output" readonly spellcheck="false"></textarea>
+      </details>
+    </section>
+  </main>
+
+  <aside class="reference">
+    <h2>Referencia de diseño</h2>
+    <img src="assets/referencia.png" alt="Firma de referencia STILOQ" width="600">
+  </aside>
+
+  <img id="logo-source" src="assets/logo.png" alt="" hidden width="375" height="190">
+
+  <script src="app.js"></script>
+</body>
+</html>
