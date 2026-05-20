@@ -265,10 +265,10 @@ function buildSignatureHtml(data, opts = {}) {
       ? Math.round(logoTopInsetPx * (imgH / logoNatH))
       : 0;
   const visibleImgH = Math.max(1, imgH - topOff);
-  const imgShiftY = topOff > 0 ? `top:-${topOff}px;` : "";
+  const cropLogo = topOff > 0;
+  const imgShiftY = cropLogo ? `top:-${topOff}px;` : "";
   const imgShiftX = leftOff > 0 ? `left:-${leftOff}px;` : "";
-  const imgMarginTop = topOff > 0 ? `margin-top:-${topOff}px;` : "";
-  const imgMarginLeft = leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
+  const imgMarginLeft = !cropLogo && leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
   const telefonoText = data.telefono || "";
 
   const contactLines = [];
@@ -280,11 +280,11 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgMarginTop}${imgMarginLeft}${imgShiftY}${imgShiftX}position:relative;width:${imgW}px;height:${imgH}px;max-width:${imgW}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
-  const logoClip =
-    topOff > 0
-      ? `<div style="height:${visibleImgH}px;max-height:${visibleImgH}px;overflow:hidden;line-height:0;font-size:0;mso-line-height-rule:exactly;">${logoImg}</div>`
-      : logoImg;
+  const imgPos = cropLogo || leftOff > 0 ? "position:relative;" : "";
+  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgPos}${imgShiftY}${imgShiftX}${imgMarginLeft}width:${imgW}px;height:${imgH}px;max-width:${imgW}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
+  const logoClip = cropLogo
+    ? `<div style="height:${visibleImgH}px;max-height:${visibleImgH}px;overflow:hidden;line-height:0;font-size:0;mso-line-height-rule:exactly;">${logoImg}</div>`
+    : logoImg;
   const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" style="vertical-align:top;padding:0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoClip}</td></tr></table>`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
