@@ -1,7 +1,7 @@
 const LOGO_PATH = "assets/logo.png";
 const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png";
-let publicLogoNatW = 288;
-let publicLogoNatH = 71;
+let publicLogoNatW = 436;
+let publicLogoNatH = 107;
 let publicLogoLeftInset = 0;
 let publicLogoTopInset = 0;
 const SCALE = 1.05;
@@ -73,11 +73,44 @@ function measureLogoBounds(img) {
   };
 }
 
+function bakeLogoBlack(img) {
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0);
+  let data;
+  try {
+    data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  } catch {
+    return null;
+  }
+  const px = data.data;
+  for (let i = 0; i < px.length; i += 4) {
+    const ink = (255 - Math.min(px[i], px[i + 1], px[i + 2])) * (px[i + 3] / 255);
+    if (ink > 30) {
+      px[i] = 0;
+      px[i + 1] = 0;
+      px[i + 2] = 0;
+      px[i + 3] = 255;
+    } else {
+      px[i + 3] = 0;
+    }
+  }
+  ctx.putImageData(data, 0, 0);
+  return canvas;
+}
+
 function buildTrimmedLogo(img) {
-  const bounds = measureLogoBounds(img);
+  const baked = bakeLogoBlack(img);
+  const source = baked || img;
+  const bounds = measureLogoBounds(source);
   if (!bounds) {
     logoIsTrimmed = false;
-    return "";
+    return baked ? baked.toDataURL("image/png") : "";
   }
   const canvas = document.createElement("canvas");
   canvas.width = bounds.width;
@@ -85,7 +118,7 @@ function buildTrimmedLogo(img) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return "";
   ctx.drawImage(
-    img,
+    source,
     bounds.left,
     bounds.top,
     bounds.width,
