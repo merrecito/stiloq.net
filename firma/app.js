@@ -13,6 +13,8 @@ const FONT = {
 };
 const LOGO_GAP = 5;
 const TEXT_COL_W = 320;
+const FOOTER_TABLE_W = 680;
+let logoTopInsetPx = 0;
 
 const AVISO_EN =
   "CONFIDENTIALITY NOTICE: This message may contain confidential information. If received in error, please delete it.";
@@ -37,6 +39,31 @@ function setLogoDimensions(w, h) {
   }
 }
 
+function measureLogoTopInset(img) {
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return 0;
+  ctx.drawImage(img, 0, 0);
+  let data;
+  try {
+    data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  } catch {
+    return 0;
+  }
+  let top = canvas.height;
+  for (let y = 0; y < canvas.height; y++) {
+    for (let x = 0; x < canvas.width; x++) {
+      if (data[(y * canvas.width + x) * 4 + 3] > 20) {
+        top = Math.min(top, y);
+        break;
+      }
+    }
+  }
+  return top >= canvas.height ? 0 : top;
+}
+
 function logoImageSize(logoW) {
   const imgW = logoW;
   if (!logoNatW || !logoNatH) {
@@ -51,6 +78,7 @@ function probeLogoFromUrl(url) {
   img.onload = () => {
     if (img.naturalWidth > 0) {
       setLogoDimensions(img.naturalWidth, img.naturalHeight);
+      logoTopInsetPx = measureLogoTopInset(img);
       onFormUpdate();
     }
   };
@@ -64,6 +92,7 @@ async function loadLogoBase64() {
   const apply = async () => {
     if (img?.naturalWidth) {
       setLogoDimensions(img.naturalWidth, img.naturalHeight);
+      logoTopInsetPx = measureLogoTopInset(img);
     }
     try {
       const res = await fetch(`${LOGO_PATH}?t=${Date.now()}`);
@@ -178,6 +207,10 @@ function lineHtml(content, margin = "0 0 2px 0") {
   return `<p style="margin:${margin};padding:0;line-height:1.1;mso-line-height-rule:exactly;">${content}</p>`;
 }
 
+function footerLineHtml(content) {
+  return `<div style="margin:0 0 2px 0;padding:0;line-height:1.15;white-space:nowrap;mso-line-height-rule:exactly;">${content}</div>`;
+}
+
 function withLogoCacheBust(url) {
   if (!url || !url.includes("logo-firma.png")) return url;
   if (url.includes("?")) return url;
@@ -203,7 +236,13 @@ function buildSignatureHtml(data, opts = {}) {
   const { imgW, imgH } = logoImageSize(logoW);
   const logoCellW = imgW + LOGO_GAP;
   const textCellW = TEXT_COL_W;
-  const totalW = logoCellW + textCellW;
+  const mainW = logoCellW + textCellW;
+  const totalW = Math.max(mainW, FOOTER_TABLE_W);
+  const topOff =
+    logoTopInsetPx > 0 && logoNatH > 0
+      ? Math.round(logoTopInsetPx * (imgH / logoNatH))
+      : 0;
+  const imgMarginTop = topOff > 0 ? `margin-top:-${topOff}px;` : "";
   const telefonoText = data.telefono || "";
 
   const contactLines = [];
@@ -215,26 +254,19 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
+  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;${imgMarginTop}width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
-  const footerGap =
-    "margin:0 0 2px 0;padding:0;line-height:1.15;mso-line-height-rule:exactly;";
 
   const footerLines = [];
   if (data.mostrarAvisos) {
     footerLines.push(
-      lineHtml(fontStyle("#999999", FONT.aviso, AVISO_EN), footerGap),
-      lineHtml(fontStyle("#999999", FONT.aviso, AVISO_ES), footerGap)
+      footerLineHtml(fontStyle("#999999", FONT.aviso, AVISO_EN)),
+      footerLineHtml(fontStyle("#999999", FONT.aviso, AVISO_ES))
     );
   }
   if (data.mostrarEco && data.mensajeEco) {
-    footerLines.push(
-      lineHtml(
-        fontStyle("#2e7d32", FONT.eco, data.mensajeEco),
-        "margin:0;padding:0;line-height:1.15;mso-line-height-rule:exactly;"
-      )
-    );
+    footerLines.push(footerLineHtml(fontStyle("#2e7d32", FONT.eco, data.mensajeEco)));
   }
 
   const footerRow =
@@ -248,7 +280,7 @@ function buildSignatureHtml(data, opts = {}) {
 <table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;min-width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
 <colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"></colgroup>
 <tr>
-<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;min-width:${logoCellW}px;max-width:${logoCellW}px;vertical-align:top;padding:0 ${LOGO_GAP}px 0 0;line-height:0;font-size:0;mso-line-height-rule:exactly;">${logoImg}</td>
+<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;min-width:${logoCellW}px;max-width:${logoCellW}px;vertical-align:top;padding:0 ${LOGO_GAP}px 0 0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoImg}</td>
 <td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;min-width:${textCellW}px;max-width:${textCellW}px;vertical-align:top;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
 </tr>
 ${footerRow}
@@ -322,6 +354,7 @@ logoFileInput?.addEventListener("change", () => {
     const probe = new Image();
     probe.onload = () => {
       setLogoDimensions(probe.naturalWidth, probe.naturalHeight);
+      logoTopInsetPx = measureLogoTopInset(probe);
       const img = document.getElementById("logo-source");
       if (img) img.src = logoBase64;
       onFormUpdate();
