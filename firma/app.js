@@ -110,7 +110,6 @@ function getFormData() {
     email: fd.get("email")?.trim() || "",
     telefono: fd.get("telefono")?.trim() || "",
     web: fd.get("web")?.trim() || "",
-    mostrarMovil: fd.get("mostrarMovil") === "on",
     direccion1: fd.get("direccion1")?.trim() || "",
     direccion2: fd.get("direccion2")?.trim() || "",
     logoAncho: Math.min(320, Math.max(80, Number(fd.get("logoAncho")) || DEFAULT_LOGO_ANCHO)),
@@ -139,7 +138,7 @@ function fontStyle(color, sizePx, content, extra = "") {
 }
 
 function linkStyle(href, label) {
-  return `<a href="${escapeHtml(href)}" style="color:#0078a8;text-decoration:underline;">${fontStyle("#0078a8", FONT.body, label)}</a>`;
+  return `<a href="${escapeHtml(href)}" style="color:#000000;text-decoration:none;"><span style="color:#000000;text-decoration:none;">${fontStyle("#000000", FONT.body, label)}</span></a>`;
 }
 
 function wrapOutlookDocument(fragment) {
@@ -151,7 +150,8 @@ function wrapOutlookDocument(fragment) {
 <!--[if mso]>
 <noscript></noscript>
 <style type="text/css">
-body, table, td, p, a, span, font { font-family: Arial, Helvetica, sans-serif !important; }
+body, table, td, p, span, font { font-family: Arial, Helvetica, sans-serif !important; }
+a { color: #000000 !important; text-decoration: none !important; }
 </style>
 <![endif]-->
 </head>
@@ -204,11 +204,7 @@ function buildSignatureHtml(data, opts = {}) {
   const logoCellW = imgW + LOGO_GAP;
   const textCellW = TEXT_COL_W;
   const totalW = logoCellW + textCellW;
-  const telefonoText = data.telefono
-    ? data.mostrarMovil
-      ? `Móvil: ${data.telefono}`
-      : data.telefono
-    : "";
+  const telefonoText = data.telefono || "";
 
   const contactLines = [];
   if (data.nombre) contactLines.push(lineHtml(`<b>${fontStyle("#000000", FONT.nombre, data.nombre)}</b>`));
