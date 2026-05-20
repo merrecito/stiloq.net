@@ -11,7 +11,7 @@ const FONT = {
   aviso: Math.round(11 * SCALE),
   eco: Math.round(12 * SCALE),
 };
-const LOGO_GAP = 2;
+const LOGO_GAP = 0;
 const TEXT_COL_W = 320;
 const FOOTER_TABLE_W = 680;
 let logoTopInsetPx = 0;
