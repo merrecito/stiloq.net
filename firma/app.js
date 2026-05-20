@@ -11,13 +11,12 @@ const FONT = {
   aviso: Math.round(11 * SCALE),
   eco: Math.round(12 * SCALE),
 };
-const LOGO_GAP = 0;
+const LOGO_GAP = 6;
 const TEXT_COL_W = 320;
 const FOOTER_TABLE_W = 680;
 let logoTopInsetPx = 0;
 let logoLeftInsetPx = 0;
 let logoRightInsetPx = 0;
-const TEXT_PULL_LEFT = 8;
 
 const AVISO_EN =
   "CONFIDENTIALITY NOTICE: This message may contain confidential information. If received in error, please delete it.";
@@ -256,8 +255,7 @@ function buildSignatureHtml(data, opts = {}) {
   const scaleX = logoNatW > 0 ? imgW / logoNatW : 1;
   const leftOff = logoLeftInsetPx > 0 ? Math.round(logoLeftInsetPx * scaleX) : 0;
   const rightOff = logoRightInsetPx > 0 ? Math.round(logoRightInsetPx * scaleX) : 0;
-  const logoVisibleW = Math.max(60, imgW - leftOff - rightOff);
-  const logoCellW = Math.max(60, logoVisibleW + LOGO_GAP - TEXT_PULL_LEFT);
+  const logoCellW = Math.max(80, imgW - leftOff + LOGO_GAP);
   const textCellW = TEXT_COL_W;
   const mainW = logoCellW + textCellW;
   const hasFooter = data.mostrarAvisos || (data.mostrarEco && data.mensajeEco);
