@@ -16,6 +16,8 @@ const TEXT_COL_W = 320;
 const FOOTER_TABLE_W = 680;
 let logoTopInsetPx = 0;
 let logoLeftInsetPx = 0;
+let logoRightInsetPx = 0;
+const TEXT_PULL_LEFT = 8;
 
 const AVISO_EN =
   "CONFIDENTIALITY NOTICE: This message may contain confidential information. If received in error, please delete it.";
@@ -55,17 +57,23 @@ function measureLogoInsets(img) {
   }
   let top = canvas.height;
   let left = canvas.width;
+  let right = 0;
+  let bottom = 0;
   for (let y = 0; y < canvas.height; y++) {
     for (let x = 0; x < canvas.width; x++) {
       if (data[(y * canvas.width + x) * 4 + 3] > 20) {
         top = Math.min(top, y);
         left = Math.min(left, x);
+        right = Math.max(right, x);
+        bottom = Math.max(bottom, y);
       }
     }
   }
   return {
     top: top >= canvas.height ? 0 : top,
     left: left >= canvas.width ? 0 : left,
+    right: right > 0 ? canvas.width - right - 1 : 0,
+    bottom: bottom > 0 ? canvas.height - bottom - 1 : 0,
   };
 }
 
@@ -86,6 +94,7 @@ function probeLogoFromUrl(url) {
       const insets = measureLogoInsets(img);
       logoTopInsetPx = insets.top;
       logoLeftInsetPx = insets.left;
+      logoRightInsetPx = insets.right;
       onFormUpdate();
     }
   };
@@ -102,6 +111,7 @@ async function loadLogoBase64() {
       const insets = measureLogoInsets(img);
       logoTopInsetPx = insets.top;
       logoLeftInsetPx = insets.left;
+      logoRightInsetPx = insets.right;
     }
     try {
       const res = await fetch(`${LOGO_PATH}?t=${Date.now()}`);
@@ -243,18 +253,20 @@ function buildSignatureHtml(data, opts = {}) {
       : logoBase64;
   const logoW = data.logoAncho;
   const { imgW, imgH } = logoImageSize(logoW);
-  const logoCellW = imgW + LOGO_GAP;
+  const scaleX = logoNatW > 0 ? imgW / logoNatW : 1;
+  const leftOff = logoLeftInsetPx > 0 ? Math.round(logoLeftInsetPx * scaleX) : 0;
+  const rightOff = logoRightInsetPx > 0 ? Math.round(logoRightInsetPx * scaleX) : 0;
+  const logoVisibleW = Math.max(60, imgW - leftOff - rightOff);
+  const logoCellW = Math.max(60, logoVisibleW + LOGO_GAP - TEXT_PULL_LEFT);
   const textCellW = TEXT_COL_W;
   const mainW = logoCellW + textCellW;
   const hasFooter = data.mostrarAvisos || (data.mostrarEco && data.mensajeEco);
   const totalW = hasFooter ? FOOTER_TABLE_W : mainW;
   const spacerW = hasFooter ? Math.max(0, totalW - mainW) : 0;
-  const scaleX = logoNatW > 0 ? imgW / logoNatW : 1;
   const topOff =
     logoTopInsetPx > 0 && logoNatH > 0
       ? Math.round(logoTopInsetPx * (imgH / logoNatH))
       : 0;
-  const leftOff = logoLeftInsetPx > 0 ? Math.round(logoLeftInsetPx * scaleX) : 0;
   const imgMarginTop = topOff > 0 ? `margin-top:-${topOff}px;` : "";
   const imgMarginLeft = leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
   const telefonoText = data.telefono || "";
@@ -380,6 +392,7 @@ logoFileInput?.addEventListener("change", () => {
       const insets = measureLogoInsets(probe);
       logoTopInsetPx = insets.top;
       logoLeftInsetPx = insets.left;
+      logoRightInsetPx = insets.right;
       const img = document.getElementById("logo-source");
       if (img) img.src = logoBase64;
       onFormUpdate();
