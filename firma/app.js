@@ -1,10 +1,8 @@
 const LOGO_PATH = "assets/logo-firma.png";
-const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png?v=5";
-const LOGO_CACHE_VERSION = "5";
-let publicLogoNatW = 288;
-let publicLogoNatH = 71;
-let publicLogoLeftInset = 0;
-let publicLogoTopInset = 0;
+const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png?v=6";
+const LOGO_CACHE_VERSION = "6";
+let logoNatW = 0;
+let logoNatH = 0;
 const SCALE = 1.05;
 const DEFAULT_LOGO_ANCHO = 190;
 const FONT = {
@@ -31,171 +29,33 @@ const btnCopy = document.getElementById("btn-copy");
 const btnDownload = document.getElementById("btn-download");
 
 let logoBase64 = "";
-let logoLeftInsetPx = 44;
-let logoTopInsetPx = 59;
-let logoRightInsetPx = 43;
-let logoNaturalWidth = 375;
-let logoNaturalHeight = 190;
-let logoIsTrimmed = false;
 
-function measureLogoBounds(img) {
-  const canvas = document.createElement("canvas");
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return null;
-  ctx.drawImage(img, 0, 0);
-  let data;
-  try {
-    data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-  } catch {
-    return null;
-  }
-  let top = canvas.height;
-  let left = canvas.width;
-  let right = 0;
-  let bottom = 0;
-  for (let y = 0; y < canvas.height; y++) {
-    for (let x = 0; x < canvas.width; x++) {
-      if (data[(y * canvas.width + x) * 4 + 3] > 20) {
-        top = Math.min(top, y);
-        left = Math.min(left, x);
-        right = Math.max(right, x);
-        bottom = Math.max(bottom, y);
-      }
-    }
-  }
-  if (top >= bottom || left >= right) return null;
-  return {
-    top,
-    left,
-    width: right - left + 1,
-    height: bottom - top + 1,
-  };
-}
-
-function buildTrimmedLogo(img) {
-  const bounds = measureLogoBounds(img);
-  if (!bounds) {
-    logoIsTrimmed = false;
-    try {
-      const c = document.createElement("canvas");
-      c.width = img.naturalWidth;
-      c.height = img.naturalHeight;
-      const cx = c.getContext("2d");
-      if (!cx) return "";
-      cx.drawImage(img, 0, 0);
-      return c.toDataURL("image/png");
-    } catch {
-      return "";
-    }
-  }
-  const canvas = document.createElement("canvas");
-  canvas.width = bounds.width;
-  canvas.height = bounds.height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
-  ctx.drawImage(
-    img,
-    bounds.left,
-    bounds.top,
-    bounds.width,
-    bounds.height,
-    0,
-    0,
-    bounds.width,
-    bounds.height
-  );
-  logoIsTrimmed = true;
-  logoLeftInsetPx = 0;
-  logoTopInsetPx = 0;
-  logoRightInsetPx = 0;
-  logoNaturalWidth = bounds.width;
-  logoNaturalHeight = bounds.height;
-  try {
-    return canvas.toDataURL("image/png");
-  } catch {
-    logoIsTrimmed = false;
-    return "";
+function setLogoDimensions(w, h) {
+  if (w > 0 && h > 0) {
+    logoNatW = w;
+    logoNatH = h;
   }
 }
 
-function footerAlignPx(logoAncho, isExternalUrl) {
-  if (logoIsTrimmed && !isExternalUrl) return 0;
-  const natural = logoNaturalWidth || 375;
-  const inset = logoLeftInsetPx || 44;
-  return Math.round(inset * (logoAncho / natural));
-}
-
-function logoTopOffsetPx(logoH, isExternalUrl) {
-  if (logoIsTrimmed && !isExternalUrl) return 0;
-  const naturalH = 190;
-  const inset = logoTopInsetPx || 59;
-  return Math.round(inset * (logoH / naturalH));
-}
-
-function logoDisplayWidth(logoW, isExternalUrl) {
-  if (logoIsTrimmed && !isExternalUrl) return logoW;
-  const natural = logoNaturalWidth || 375;
-  const right = logoRightInsetPx || 43;
-  const crop = Math.round(right * (logoW / natural) * 0.25);
-  return Math.max(80, logoW - crop);
-}
-
-function logoImageSize(logoW, logoUrl) {
-  const usePublic = logoUrl.includes("logo-firma.png");
-  const imgW = usePublic ? logoW : logoDisplayWidth(logoW, /^https?:\/\//i.test(logoUrl));
-  const natW = usePublic ? publicLogoNatW : logoIsTrimmed ? logoNaturalWidth : 375;
-  const natH = usePublic ? publicLogoNatH : logoIsTrimmed ? logoNaturalHeight : 190;
-  const imgH = Math.max(1, Math.round((imgW * natH) / natW));
-  return { imgW, imgH };
-}
-
-function fallbackPublicInsets() {
-  if (publicLogoNatW <= 300) {
-    publicLogoLeftInset = 0;
-    publicLogoTopInset = 0;
-  } else {
-    publicLogoLeftInset = 44;
-    publicLogoTopInset = 59;
+function logoImageSize(logoW) {
+  const imgW = logoW;
+  if (!logoNatW || !logoNatH) {
+    return { imgW, imgH: Math.max(1, Math.round(imgW * 0.25)) };
   }
+  return { imgW, imgH: Math.max(1, Math.round((imgW * logoNatH) / logoNatW)) };
 }
 
-function logoInsetsScaled(imgW, imgH, logoUrl) {
-  if (logoUrl.includes("logo-firma.png")) {
-    return {
-      left: Math.round(publicLogoLeftInset * (imgW / publicLogoNatW)),
-      top: Math.round(publicLogoTopInset * (imgH / publicLogoNatH)),
-    };
-  }
-  return {
-    left: logoIsTrimmed && !/^https?:\/\//i.test(logoUrl) ? 0 : footerAlignPx(imgW, true),
-    top: logoIsTrimmed && !/^https?:\/\//i.test(logoUrl) ? 0 : logoTopOffsetPx(imgH, true),
-  };
-}
-
-function probePublicLogoSize() {
+function probeLogoFromUrl(url) {
   const img = new Image();
   img.crossOrigin = "anonymous";
   img.onload = () => {
     if (img.naturalWidth > 0) {
-      publicLogoNatW = img.naturalWidth;
-      publicLogoNatH = img.naturalHeight;
-      const bounds = measureLogoBounds(img);
-      if (bounds) {
-        publicLogoLeftInset = bounds.left;
-        publicLogoTopInset = bounds.top;
-      } else {
-        fallbackPublicInsets();
-      }
+      setLogoDimensions(img.naturalWidth, img.naturalHeight);
       onFormUpdate();
     }
   };
-  img.onerror = () => {
-    fallbackPublicInsets();
-    onFormUpdate();
-  };
-  img.src = `${PUBLIC_LOGO_URL}?v=${Date.now()}`;
+  img.onerror = () => onFormUpdate();
+  img.src = url.includes("?") ? `${url}&_t=${Date.now()}` : `${url}?_t=${Date.now()}`;
 }
 
 async function loadLogoBase64() {
@@ -203,29 +63,28 @@ async function loadLogoBase64() {
 
   const apply = async () => {
     if (img?.naturalWidth) {
-      logoNaturalWidth = img.naturalWidth;
-      logoNaturalHeight = img.naturalHeight;
-      const bounds = measureLogoBounds(img);
-      if (bounds) {
-        logoLeftInsetPx = bounds.left;
-        logoTopInsetPx = bounds.top;
-        logoRightInsetPx = img.naturalWidth - bounds.left - bounds.width;
-      }
-      logoBase64 = buildTrimmedLogo(img) || "";
+      setLogoDimensions(img.naturalWidth, img.naturalHeight);
     }
-    if (!logoBase64) {
-      try {
-        const res = await fetch(LOGO_PATH);
-        const blob = await res.blob();
-        logoBase64 = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-      } catch {
-        logoBase64 = "";
+    try {
+      const res = await fetch(`${LOGO_PATH}?t=${Date.now()}`);
+      const blob = await res.blob();
+      logoBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+      if (!logoNatW && logoBase64) {
+        const probe = new Image();
+        probe.onload = () => {
+          setLogoDimensions(probe.naturalWidth, probe.naturalHeight);
+          updatePreview();
+        };
+        probe.src = logoBase64;
+        return;
       }
+    } catch {
+      logoBase64 = "";
     }
     updatePreview();
   };
@@ -330,15 +189,18 @@ function resolveLogoUrl(data) {
   return withLogoCacheBust(url || PUBLIC_LOGO_URL);
 }
 
-function buildSignatureHtml(data) {
+function buildSignatureHtml(data, opts = {}) {
+  const forCopy = opts.forCopy === true;
   const logoUrl = resolveLogoUrl(data);
   const isExternalUrl = /^https?:\/\//i.test(logoUrl);
-  const logoSrc = isExternalUrl ? logoUrl : logoBase64 || LOGO_PATH;
+  const logoSrc =
+    forCopy || !logoBase64
+      ? isExternalUrl
+        ? logoUrl
+        : logoBase64 || LOGO_PATH
+      : logoBase64;
   const logoW = data.logoAncho;
-  const { imgW, imgH } = logoImageSize(logoW, logoUrl);
-  const insets = logoInsetsScaled(imgW, imgH, logoUrl);
-  const topOff = insets.top;
-  const imgMarginTop = topOff > 0 ? `margin-top:-${topOff}px;` : "";
+  const { imgW, imgH } = logoImageSize(logoW);
   const logoCellW = imgW + LOGO_GAP;
   const textCellW = TEXT_COL_W;
   const totalW = logoCellW + textCellW;
@@ -357,7 +219,7 @@ function buildSignatureHtml(data) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const logoBlock = `<table align="left" border="0" cellpadding="0" cellspacing="0" width="${imgW}" style="border-collapse:collapse;width:${imgW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" style="width:${imgW}px;line-height:0;font-size:0;vertical-align:top;mso-line-height-rule:exactly;"><img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;${imgMarginTop}width:${imgW}px !important;height:${imgH}px !important;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;mso-width-percent:0;mso-height-percent:0;"></td></tr></table>`;
+  const logoBlock = `<table align="left" border="0" cellpadding="0" cellspacing="0" width="${imgW}" style="border-collapse:collapse;width:${imgW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" style="width:${imgW}px;line-height:0;font-size:0;vertical-align:top;mso-line-height-rule:exactly;"><img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></td></tr></table>`;
 
   const mainTable = `<table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;min-width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
 <colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"></colgroup>
@@ -368,23 +230,18 @@ function buildSignatureHtml(data) {
 </table>`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
-  const align = insets.left;
-  const spacer =
-    align > 0
-      ? `<td width="${align}" style="width:${align}px;padding:0;font-size:1px;line-height:1px;mso-line-height-rule:exactly;">&nbsp;</td>`
-      : "";
   const footerGap = "margin:0 0 2px 0;padding:0;line-height:1.15;white-space:nowrap;mso-line-height-rule:exactly;";
 
   const footerRows = [];
   if (data.mostrarAvisos) {
     footerRows.push(
-      `<tr>${spacer}<td nowrap="nowrap" style="${footerGap}">${fontStyle("#999999", FONT.aviso, AVISO_EN)}</td></tr>`,
-      `<tr>${spacer}<td nowrap="nowrap" style="${footerGap}">${fontStyle("#999999", FONT.aviso, AVISO_ES)}</td></tr>`
+      `<tr><td nowrap="nowrap" style="${footerGap}">${fontStyle("#999999", FONT.aviso, AVISO_EN)}</td></tr>`,
+      `<tr><td nowrap="nowrap" style="${footerGap}">${fontStyle("#999999", FONT.aviso, AVISO_ES)}</td></tr>`
     );
   }
   if (data.mostrarEco && data.mensajeEco) {
     footerRows.push(
-      `<tr>${spacer}<td nowrap="nowrap" style="margin:0;padding:0;line-height:1.15;white-space:nowrap;mso-line-height-rule:exactly;">${fontStyle("#2e7d32", FONT.eco, data.mensajeEco)}</td></tr>`
+      `<tr><td nowrap="nowrap" style="margin:0;padding:0;line-height:1.15;white-space:nowrap;mso-line-height-rule:exactly;">${fontStyle("#2e7d32", FONT.eco, data.mensajeEco)}</td></tr>`
     );
   }
 
@@ -439,6 +296,7 @@ async function publishLogoToWeb() {
 
     logoPublishStatus.textContent = data.message || "Logo publicado.";
     logoPublishStatus.className = "logo-publish-status ok";
+    onLogoUrlChange();
     onFormUpdate();
   } catch (err) {
     const hint =
@@ -456,36 +314,32 @@ btnPublishLogo?.addEventListener("click", publishLogoToWeb);
 
 logoFileInput?.addEventListener("change", () => {
   const file = logoFileInput.files?.[0];
-  const img = document.getElementById("logo-source");
-  if (!file || !img) return;
+  if (!file) return;
 
-  const url = URL.createObjectURL(file);
-  img.onload = () => {
-    logoNaturalWidth = img.naturalWidth;
-    logoNaturalHeight = img.naturalHeight;
-    const bounds = measureLogoBounds(img);
-    if (bounds) {
-      logoLeftInsetPx = bounds.left;
-      logoTopInsetPx = bounds.top;
-      logoRightInsetPx = img.naturalWidth - bounds.left - bounds.width;
-    }
-    logoBase64 = buildTrimmedLogo(img) || "";
-    onFormUpdate();
-    URL.revokeObjectURL(url);
-    if (logoPublishStatus) {
-      logoPublishStatus.textContent =
-        "Logo cargado en vista previa. Pulsa «Publicar logo» (con npm start) para subirlo a stiloq.net.";
-      logoPublishStatus.className = "logo-publish-status ok";
-    }
+  const reader = new FileReader();
+  reader.onload = () => {
+    logoBase64 = reader.result;
+    const probe = new Image();
+    probe.onload = () => {
+      setLogoDimensions(probe.naturalWidth, probe.naturalHeight);
+      const img = document.getElementById("logo-source");
+      if (img) img.src = logoBase64;
+      onFormUpdate();
+      if (logoPublishStatus) {
+        logoPublishStatus.textContent =
+          "Logo cargado sin modificar. Pulsa «Publicar logo» (npm start) para subirlo.";
+        logoPublishStatus.className = "logo-publish-status ok";
+      }
+    };
+    probe.onerror = () => {
+      if (logoPublishStatus) {
+        logoPublishStatus.textContent = "No se pudo leer el PNG.";
+        logoPublishStatus.className = "logo-publish-status err";
+      }
+    };
+    probe.src = logoBase64;
   };
-  img.onerror = () => {
-    URL.revokeObjectURL(url);
-    if (logoPublishStatus) {
-      logoPublishStatus.textContent = "No se pudo leer el archivo. Usa PNG con transparencia.";
-      logoPublishStatus.className = "logo-publish-status err";
-    }
-  };
-  img.src = url;
+  reader.readAsDataURL(file);
 });
 
 async function checkLogoUrl(url) {
@@ -569,7 +423,7 @@ async function copyForOutlook() {
     localStorage.setItem("stiloq_logo_url", PUBLIC_LOGO_URL);
     onFormUpdate();
   }
-  const fragment = buildSignatureHtml(getFormData());
+  const fragment = buildSignatureHtml(getFormData(), { forCopy: true });
   if (!fragment.includes("https://")) {
     copyStatus.textContent =
       "Falta la URL del logo. Rellena https://www.stiloq.net/assets/logo-firma.png y vuelve a copiar.";
@@ -607,7 +461,7 @@ async function copyForOutlook() {
 }
 
 function openCopyWindow() {
-  const fragment = buildSignatureHtml(getFormData());
+  const fragment = buildSignatureHtml(getFormData(), { forCopy: true });
   const html = wrapOutlookDocument(fragment);
   const win = window.open("", "_blank", "width=800,height=640");
   if (!win) {
@@ -624,7 +478,7 @@ function openCopyWindow() {
       3. Desmarca «Usar siempre mi tipo de letra predefinido»<br>
       4. Cmd+V en el cuadro de firma (no en un correo nuevo)<br>
       5. Clic en el logo → cambia «Tamaño de la imagen» (no uses Tamaño real)<br>
-      6. Si falta el logo: arrastra <code>assets/logo.png</code> al cuadro de firma
+      6. Si falta el logo: arrastra <code>assets/logo-firma.png</code> al cuadro de firma
     </div>`
   );
   win.document.close();
@@ -658,13 +512,21 @@ function initLogoUrl() {
   checkLogoUrl(logoUrlInput.value);
 }
 
+function onLogoUrlChange() {
+  const url = resolveLogoUrl(getFormData());
+  if (/^https?:\/\//i.test(url)) {
+    probeLogoFromUrl(url);
+  }
+}
+
 logoUrlInput?.addEventListener("change", () => {
   if (logoUrlInput.value.trim()) {
     localStorage.setItem("stiloq_logo_url", logoUrlInput.value.trim());
   }
+  onLogoUrlChange();
 });
 
 initLogoUrl();
-probePublicLogoSize();
 onFormUpdate();
 loadLogoBase64();
+onLogoUrlChange();
