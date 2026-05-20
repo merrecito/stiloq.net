@@ -1,5 +1,6 @@
 const LOGO_PATH = "assets/logo.png";
-const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png";
+const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png?v=2";
+const LOGO_CACHE_VERSION = "2";
 let publicLogoNatW = 436;
 let publicLogoNatH = 107;
 let publicLogoLeftInset = 0;
@@ -341,9 +342,15 @@ function lineHtml(content, margin = "0 0 2px 0") {
   return `<p style="margin:${margin};padding:0;line-height:1.1;mso-line-height-rule:exactly;">${content}</p>`;
 }
 
+function withLogoCacheBust(url) {
+  if (!url || !url.includes("logo-firma.png")) return url;
+  if (url.includes("?")) return url;
+  return `${url}?v=${LOGO_CACHE_VERSION}`;
+}
+
 function resolveLogoUrl(data) {
   const url = data.logoUrl?.trim();
-  return url || PUBLIC_LOGO_URL;
+  return withLogoCacheBust(url || PUBLIC_LOGO_URL);
 }
 
 function buildSignatureHtml(data) {
