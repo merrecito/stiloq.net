@@ -254,7 +254,6 @@ function buildSignatureHtml(data, opts = {}) {
   const { imgW, imgH } = logoImageSize(logoW);
   const scaleX = logoNatW > 0 ? imgW / logoNatW : 1;
   const leftOff = logoLeftInsetPx > 0 ? Math.round(logoLeftInsetPx * scaleX) : 0;
-  const rightOff = logoRightInsetPx > 0 ? Math.round(logoRightInsetPx * scaleX) : 0;
   const logoCellW = Math.max(80, imgW - leftOff + LOGO_GAP);
   const textCellW = TEXT_COL_W;
   const mainW = logoCellW + textCellW;
