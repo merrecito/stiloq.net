@@ -11,7 +11,7 @@ const FONT = {
   aviso: Math.round(11 * SCALE),
   eco: Math.round(12 * SCALE),
 };
-const LOGO_GAP = 3;
+const LOGO_GAP = 5;
 const TEXT_COL_W = 320;
 const FOOTER_TABLE_W = 680;
 let logoTopInsetPx = 0;
@@ -255,8 +255,7 @@ function buildSignatureHtml(data, opts = {}) {
   const scaleX = logoNatW > 0 ? imgW / logoNatW : 1;
   const leftOff = logoLeftInsetPx > 0 ? Math.round(logoLeftInsetPx * scaleX) : 0;
   const rightOff = logoRightInsetPx > 0 ? Math.round(logoRightInsetPx * scaleX) : 0;
-  const logoVisibleW = Math.max(60, imgW - leftOff - rightOff);
-  const logoCellW = logoVisibleW + LOGO_GAP;
+  const logoCellW = Math.max(80, imgW - leftOff + LOGO_GAP);
   const textCellW = TEXT_COL_W;
   const mainW = logoCellW + textCellW;
   const hasFooter = data.mostrarAvisos || (data.mostrarEco && data.mensajeEco);
