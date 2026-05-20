@@ -222,7 +222,7 @@ function buildCfHtml(fragment) {
 }
 
 function lineHtml(content, margin = "0 0 2px 0") {
-  return `<p style="margin:${margin};padding:0;line-height:1.1;mso-line-height-rule:exactly;">${content}</p>`;
+  return `<div style="margin:${margin};padding:0;line-height:1.1;mso-line-height-rule:exactly;">${content}</div>`;
 }
 
 function footerLineHtml(content) {
@@ -264,6 +264,9 @@ function buildSignatureHtml(data, opts = {}) {
     logoTopInsetPx > 0 && logoNatH > 0
       ? Math.round(logoTopInsetPx * (imgH / logoNatH))
       : 0;
+  const visibleImgH = Math.max(1, imgH - topOff);
+  const imgShiftY = topOff > 0 ? `top:-${topOff}px;` : "";
+  const imgShiftX = leftOff > 0 ? `left:-${leftOff}px;` : "";
   const imgMarginTop = topOff > 0 ? `margin-top:-${topOff}px;` : "";
   const imgMarginLeft = leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
   const telefonoText = data.telefono || "";
@@ -277,7 +280,12 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;${imgMarginTop}${imgMarginLeft}width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
+  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgMarginTop}${imgMarginLeft}${imgShiftY}${imgShiftX}position:relative;width:${imgW}px;height:${imgH}px;max-width:${imgW}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
+  const logoClip =
+    topOff > 0
+      ? `<div style="height:${visibleImgH}px;max-height:${visibleImgH}px;overflow:hidden;line-height:0;font-size:0;mso-line-height-rule:exactly;">${logoImg}</div>`
+      : logoImg;
+  const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" style="vertical-align:top;padding:0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoClip}</td></tr></table>`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
 
@@ -311,8 +319,8 @@ function buildSignatureHtml(data, opts = {}) {
 <table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;margin:0;padding:0;">
 ${colgroup}
 <tr>
-<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;vertical-align:top;padding:0;line-height:0;font-size:0;overflow:visible;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoImg}</td>
-<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;max-width:${textCellW}px;vertical-align:top;padding:0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
+<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;vertical-align:top!important;padding:0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoBlock}</td>
+<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;max-width:${textCellW}px;vertical-align:top!important;padding:0;line-height:1.1;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
 ${spacerCell}
 </tr>
 ${footerRow}
