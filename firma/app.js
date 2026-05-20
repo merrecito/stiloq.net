@@ -184,7 +184,7 @@ a { color: #000000 !important; text-decoration: none !important; }
 </style>
 <![endif]-->
 </head>
-<body style="margin:0;padding:16px;">
+<body style="margin:0;padding:0;">
 ${fragment}
 </body>
 </html>`;
@@ -237,7 +237,9 @@ function buildSignatureHtml(data, opts = {}) {
   const logoCellW = imgW + LOGO_GAP;
   const textCellW = TEXT_COL_W;
   const mainW = logoCellW + textCellW;
-  const totalW = Math.max(mainW, FOOTER_TABLE_W);
+  const hasFooter = data.mostrarAvisos || (data.mostrarEco && data.mensajeEco);
+  const totalW = hasFooter ? FOOTER_TABLE_W : mainW;
+  const spacerW = hasFooter ? Math.max(0, totalW - mainW) : 0;
   const topOff =
     logoTopInsetPx > 0 && logoNatH > 0
       ? Math.round(logoTopInsetPx * (imgH / logoNatH))
@@ -269,19 +271,28 @@ function buildSignatureHtml(data, opts = {}) {
     footerLines.push(footerLineHtml(fontStyle("#2e7d32", FONT.eco, data.mensajeEco)));
   }
 
+  const colgroup = hasFooter
+    ? `<colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"><col span="1" width="${spacerW}" style="width:${spacerW}px;"></colgroup>`
+    : `<colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"></colgroup>`;
+
+  const spacerCell = hasFooter
+    ? `<td width="${spacerW}" style="width:${spacerW}px;min-width:${spacerW}px;font-size:0;line-height:0;padding:0;mso-line-height-rule:exactly;">&nbsp;</td>`
+    : "";
+
   const footerRow =
     footerLines.length > 0
       ? `<tr>
-<td colspan="2" align="left" valign="top" width="${totalW}" style="width:${totalW}px;padding:${footerTopGap}px 0 0 0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${footerLines.join("")}</td>
+<td colspan="${hasFooter ? 3 : 2}" align="left" valign="top" style="padding:${footerTopGap}px 0 0 0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${footerLines.join("")}</td>
 </tr>`
       : "";
 
   return `<!-- Firma STILOQ -->
-<table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;min-width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
-<colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"></colgroup>
+<table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;margin:0;padding:0;">
+${colgroup}
 <tr>
-<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;min-width:${logoCellW}px;max-width:${logoCellW}px;vertical-align:top;padding:0 ${LOGO_GAP}px 0 0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoImg}</td>
-<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;min-width:${textCellW}px;max-width:${textCellW}px;vertical-align:top;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
+<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;vertical-align:top;padding:0 ${LOGO_GAP}px 0 0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoImg}</td>
+<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;max-width:${textCellW}px;vertical-align:top;padding:0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
+${spacerCell}
 </tr>
 ${footerRow}
 </table>`;
