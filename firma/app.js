@@ -219,40 +219,44 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const logoBlock = `<table align="left" border="0" cellpadding="0" cellspacing="0" width="${imgW}" style="border-collapse:collapse;width:${imgW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" style="width:${imgW}px;line-height:0;font-size:0;vertical-align:top;mso-line-height-rule:exactly;"><img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"></td></tr></table>`;
-
-  const mainTable = `<table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;min-width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
-<colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"></colgroup>
-<tr>
-<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;min-width:${logoCellW}px;max-width:${logoCellW}px;vertical-align:top;padding:0 ${LOGO_GAP}px 0 0;mso-line-height-rule:exactly;">${logoBlock}</td>
-<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;min-width:${textCellW}px;max-width:${textCellW}px;vertical-align:top;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
-</tr>
-</table>`;
+  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
-  const footerGap = "margin:0 0 2px 0;padding:0;line-height:1.15;white-space:nowrap;mso-line-height-rule:exactly;";
+  const footerGap =
+    "margin:0 0 2px 0;padding:0;line-height:1.15;mso-line-height-rule:exactly;";
 
-  const footerRows = [];
+  const footerLines = [];
   if (data.mostrarAvisos) {
-    footerRows.push(
-      `<tr><td nowrap="nowrap" style="${footerGap}">${fontStyle("#999999", FONT.aviso, AVISO_EN)}</td></tr>`,
-      `<tr><td nowrap="nowrap" style="${footerGap}">${fontStyle("#999999", FONT.aviso, AVISO_ES)}</td></tr>`
+    footerLines.push(
+      lineHtml(fontStyle("#999999", FONT.aviso, AVISO_EN), footerGap),
+      lineHtml(fontStyle("#999999", FONT.aviso, AVISO_ES), footerGap)
     );
   }
   if (data.mostrarEco && data.mensajeEco) {
-    footerRows.push(
-      `<tr><td nowrap="nowrap" style="margin:0;padding:0;line-height:1.15;white-space:nowrap;mso-line-height-rule:exactly;">${fontStyle("#2e7d32", FONT.eco, data.mensajeEco)}</td></tr>`
+    footerLines.push(
+      lineHtml(
+        fontStyle("#2e7d32", FONT.eco, data.mensajeEco),
+        "margin:0;padding:0;line-height:1.15;mso-line-height-rule:exactly;"
+      )
     );
   }
 
-  const footer =
-    footerRows.length > 0
-      ? `<table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;min-width:${totalW}px;margin:${footerTopGap}px 0 0 0;mso-table-lspace:0pt;mso-table-rspace:0pt;">${footerRows.join("")}</table>`
+  const footerRow =
+    footerLines.length > 0
+      ? `<tr>
+<td colspan="2" align="left" valign="top" width="${totalW}" style="width:${totalW}px;padding:${footerTopGap}px 0 0 0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${footerLines.join("")}</td>
+</tr>`
       : "";
 
   return `<!-- Firma STILOQ -->
-${mainTable}
-${footer}`;
+<table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;min-width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
+<colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"></colgroup>
+<tr>
+<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;min-width:${logoCellW}px;max-width:${logoCellW}px;vertical-align:top;padding:0 ${LOGO_GAP}px 0 0;line-height:0;font-size:0;mso-line-height-rule:exactly;">${logoImg}</td>
+<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;min-width:${textCellW}px;max-width:${textCellW}px;vertical-align:top;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
+</tr>
+${footerRow}
+</table>`;
 }
 
 function updatePreview() {
