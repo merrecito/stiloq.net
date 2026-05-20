@@ -241,7 +241,7 @@ a:hover {
   color: var(--color-black);
 }
 
-/* Servicios: paneles imagen, landings + Fabricación · SQ Apparel */
+/* Servicios: paneles imagen, landings + Fabricación · SQ Lab */
 .servicios-panels {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -325,7 +325,7 @@ a:hover {
   border-color: var(--color-white);
 }
 
-/* ----------------------------------------------------------------------------- SQ Apparel: stocks hero */
+/* ----------------------------------------------------------------------------- SQ Lab: stocks hero */
 .sq-moda-hero {
   position: relative;
   min-height: calc(100svh - var(--header-h));
