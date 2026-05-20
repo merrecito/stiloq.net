@@ -1,8 +1,8 @@
 const LOGO_PATH = "assets/logo.png";
-const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png?v=3";
-const LOGO_CACHE_VERSION = "3";
-let publicLogoNatW = 457;
-let publicLogoNatH = 128;
+const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png?v=4";
+const LOGO_CACHE_VERSION = "4";
+let publicLogoNatW = 375;
+let publicLogoNatH = 190;
 let publicLogoLeftInset = 0;
 let publicLogoTopInset = 0;
 const SCALE = 1.05;
@@ -74,44 +74,21 @@ function measureLogoBounds(img) {
   };
 }
 
-function bakeLogoBlack(img) {
-  const canvas = document.createElement("canvas");
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return null;
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(img, 0, 0);
-  let data;
-  try {
-    data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  } catch {
-    return null;
-  }
-  const px = data.data;
-  for (let i = 0; i < px.length; i += 4) {
-    const ink = (255 - Math.min(px[i], px[i + 1], px[i + 2])) * (px[i + 3] / 255);
-    if (ink > 30) {
-      px[i] = 0;
-      px[i + 1] = 0;
-      px[i + 2] = 0;
-      px[i + 3] = 255;
-    } else {
-      px[i + 3] = 0;
-    }
-  }
-  ctx.putImageData(data, 0, 0);
-  return canvas;
-}
-
 function buildTrimmedLogo(img) {
-  const baked = bakeLogoBlack(img);
-  const source = baked || img;
-  const bounds = measureLogoBounds(source);
+  const bounds = measureLogoBounds(img);
   if (!bounds) {
     logoIsTrimmed = false;
-    return baked ? baked.toDataURL("image/png") : "";
+    try {
+      const c = document.createElement("canvas");
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const cx = c.getContext("2d");
+      if (!cx) return "";
+      cx.drawImage(img, 0, 0);
+      return c.toDataURL("image/png");
+    } catch {
+      return "";
+    }
   }
   const canvas = document.createElement("canvas");
   canvas.width = bounds.width;
@@ -119,7 +96,7 @@ function buildTrimmedLogo(img) {
   const ctx = canvas.getContext("2d");
   if (!ctx) return "";
   ctx.drawImage(
-    source,
+    img,
     bounds.left,
     bounds.top,
     bounds.width,
@@ -476,6 +453,40 @@ async function publishLogoToWeb() {
 }
 
 btnPublishLogo?.addEventListener("click", publishLogoToWeb);
+
+logoFileInput?.addEventListener("change", () => {
+  const file = logoFileInput.files?.[0];
+  const img = document.getElementById("logo-source");
+  if (!file || !img) return;
+
+  const url = URL.createObjectURL(file);
+  img.onload = () => {
+    logoNaturalWidth = img.naturalWidth;
+    logoNaturalHeight = img.naturalHeight;
+    const bounds = measureLogoBounds(img);
+    if (bounds) {
+      logoLeftInsetPx = bounds.left;
+      logoTopInsetPx = bounds.top;
+      logoRightInsetPx = img.naturalWidth - bounds.left - bounds.width;
+    }
+    logoBase64 = buildTrimmedLogo(img) || "";
+    onFormUpdate();
+    URL.revokeObjectURL(url);
+    if (logoPublishStatus) {
+      logoPublishStatus.textContent =
+        "Logo cargado en vista previa. Pulsa «Publicar logo» (con npm start) para subirlo a stiloq.net.";
+      logoPublishStatus.className = "logo-publish-status ok";
+    }
+  };
+  img.onerror = () => {
+    URL.revokeObjectURL(url);
+    if (logoPublishStatus) {
+      logoPublishStatus.textContent = "No se pudo leer el archivo. Usa PNG con transparencia.";
+      logoPublishStatus.className = "logo-publish-status err";
+    }
+  };
+  img.src = url;
+});
 
 async function checkLogoUrl(url) {
   if (!logoUrlStatus) return;
