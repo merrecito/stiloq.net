@@ -315,6 +315,11 @@ textarea {
   min-height: 280px;
 }
 
+.preview-content {
+  display: inline-block;
+  min-width: min-content;
+}
+
 .html-source {
   margin-top: 1.25rem;
 }
