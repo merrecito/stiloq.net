@@ -297,6 +297,12 @@ function buildSignatureHtml(data, opts = {}) {
   const mainW = logoCellW + textCellW;
   const hasFooter = data.mostrarAvisos || (data.mostrarEco && data.mensajeEco);
   void hasFooter;
+  const topOff =
+    logoTopInsetPx > 0 && logoNatH > 0
+      ? Math.round(logoTopInsetPx * (imgH / logoNatH))
+      : 0;
+  const imgMarginTop = topOff > 0 ? `margin-top:-${topOff}px;` : "";
+  const imgMarginLeft = leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
   const telefonoText = data.telefono || "";
 
   const contactLines = [];
@@ -308,7 +314,7 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const logoImg = `<img src="${logoSrc}" alt="STILOQ" width="${imgW}" height="${imgH}" border="0" style="display:block;width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
+  const logoImg = `<img src="${logoSrc}" alt="STILOQ" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgMarginTop}${imgMarginLeft}width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
 
