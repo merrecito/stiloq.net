@@ -244,16 +244,49 @@ function resolveLogoUrl(data) {
   return withLogoCacheBust(url || PUBLIC_LOGO_URL);
 }
 
+function resolveLogoSrc(data, forCopy) {
+  const url = resolveLogoUrl(data);
+  if (forCopy && logoBase64) return logoBase64;
+  if (/^https?:\/\//i.test(url)) return url;
+  return logoBase64 || LOGO_PATH;
+}
+
+async function ensureLogoBase64(data) {
+  if (logoBase64) return true;
+  const url = resolveLogoUrl(data);
+  if (!/^https?:\/\//i.test(url)) return false;
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return false;
+    const blob = await res.blob();
+    logoBase64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    const probe = new Image();
+    await new Promise((resolve, reject) => {
+      probe.onload = () => {
+        setLogoDimensions(probe.naturalWidth, probe.naturalHeight);
+        const insets = measureLogoInsets(probe);
+        logoTopInsetPx = insets.top;
+        logoLeftInsetPx = insets.left;
+        logoRightInsetPx = insets.right;
+        resolve();
+      };
+      probe.onerror = reject;
+      probe.src = logoBase64;
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function buildSignatureHtml(data, opts = {}) {
   const forCopy = opts.forCopy === true;
-  const logoUrl = resolveLogoUrl(data);
-  const isExternalUrl = /^https?:\/\//i.test(logoUrl);
-  const logoSrc =
-    forCopy || !logoBase64
-      ? isExternalUrl
-        ? logoUrl
-        : logoBase64 || LOGO_PATH
-      : logoBase64;
+  const logoSrc = resolveLogoSrc(data, forCopy);
   const logoW = data.logoAncho;
   const { imgW, imgH } = logoImageSize(logoW);
   const scaleX = logoNatW > 0 ? imgW / logoNatW : 1;
@@ -270,9 +303,7 @@ function buildSignatureHtml(data, opts = {}) {
       : 0;
   const visibleImgH = Math.max(1, imgH - topOff);
   const cropLogo = topOff > 0;
-  const imgShiftY = cropLogo ? `top:-${topOff}px;` : "";
-  const imgShiftX = leftOff > 0 ? `left:-${leftOff}px;` : "";
-  const imgMarginLeft = !cropLogo && leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
+  const imgMarginLeft = leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
   const telefonoText = data.telefono || "";
 
   const contactLines = [];
@@ -284,12 +315,10 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const imgPos = cropLogo || leftOff > 0 ? "position:relative;" : "";
-  const logoImg = `<img src="${logoSrc}" alt="" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgPos}${imgShiftY}${imgShiftX}${imgMarginLeft}width:${imgW}px;height:${imgH}px;max-width:${imgW}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
-  const logoClip = cropLogo
-    ? `<div style="height:${visibleImgH}px;max-height:${visibleImgH}px;overflow:hidden;line-height:0;font-size:0;mso-line-height-rule:exactly;">${logoImg}</div>`
-    : logoImg;
-  const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" style="vertical-align:top;padding:0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoClip}</td></tr></table>`;
+  const imgMarginTop = cropLogo ? `margin-top:-${topOff}px;` : "";
+  const logoImg = `<img src="${logoSrc}" alt="STILOQ" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgMarginTop}${imgMarginLeft}width:${imgW}px;height:${imgH}px;max-width:${imgW}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
+  const logoTdH = cropLogo ? visibleImgH : imgH;
+  const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" width="${logoCellW}" height="${logoTdH}" style="width:${logoCellW}px;height:${logoTdH}px;max-height:${logoTdH}px;vertical-align:top;padding:0;line-height:0;font-size:0;overflow:hidden;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoImg}</td></tr></table>`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
 
@@ -503,19 +532,24 @@ async function copyForOutlook() {
     localStorage.setItem("stiloq_logo_url", PUBLIC_LOGO_URL);
     onFormUpdate();
   }
-  const fragment = buildSignatureHtml(getFormData(), { forCopy: true });
-  if (!fragment.includes("https://")) {
+  await ensureLogoBase64(getFormData());
+  const copyData = getFormData();
+  const fragment = buildSignatureHtml(copyData, { forCopy: true });
+  if (!fragment.includes("<img ")) {
     copyStatus.textContent =
-      "Falta la URL del logo. Rellena https://www.stiloq.net/assets/logo-firma.png y vuelve a copiar.";
+      "No se pudo incluir el logo. Comprueba la URL o recarga la página y vuelve a copiar.";
     copyStatus.className = "copy-status err";
     return;
   }
   copyStatus.className = "copy-status";
   const cfHtml = buildCfHtml(fragment);
+  const embedded = fragment.includes("data:image");
+  const copyHint = embedded
+    ? "Firma copiada (logo incrustado). Pégala en Outlook → Configuración → Firmas. Desmarca la fuente predefinida."
+    : "Firma copiada (logo por URL). Pégala en Outlook → Configuración → Firmas. Desmarca la fuente predefinida.";
 
   if (copyRichHtml(fragment)) {
-    copyStatus.textContent =
-      "Firma copiada (logo por URL). Pégala en Outlook → Configuración → Firmas. Desmarca la fuente predefinida.";
+    copyStatus.textContent = copyHint;
     return;
   }
 
@@ -527,8 +561,7 @@ async function copyForOutlook() {
           "text/plain": new Blob([preview.innerText], { type: "text/plain" }),
         }),
       ]);
-      copyStatus.textContent =
-        "Firma copiada. Pégala en Configuración → Firmas de Outlook (no en el cuerpo del mensaje).";
+      copyStatus.textContent = copyHint;
       return;
     }
   } catch {
@@ -540,7 +573,8 @@ async function copyForOutlook() {
   copyStatus.textContent = "Usa «Abrir para copiar» y sigue los pasos de la ventana.";
 }
 
-function openCopyWindow() {
+async function openCopyWindow() {
+  await ensureLogoBase64(getFormData());
   const fragment = buildSignatureHtml(getFormData(), { forCopy: true });
   const html = wrapOutlookDocument(fragment);
   const win = window.open("", "_blank", "width=800,height=640");
