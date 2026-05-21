@@ -222,10 +222,11 @@ function buildCfHtml(fragment) {
 }
 
 const LINE_GAP = "0 0 4px 0";
+const LINE_GAP_TIGHT = "0 0 0 0";
 const LINE_GAP_AFTER_CARGO = "0 0 8px 0";
 
-function lineHtml(content, margin = LINE_GAP) {
-  return `<div style="margin:${margin};padding:0;line-height:1.2;mso-line-height-rule:exactly;">${content}</div>`;
+function lineHtml(content, margin = LINE_GAP, lineHeight = 1.2) {
+  return `<div style="margin:${margin};padding:0;line-height:${lineHeight};mso-line-height-rule:exactly;">${content}</div>`;
 }
 
 function footerLineHtml(content) {
@@ -275,8 +276,8 @@ function buildSignatureHtml(data, opts = {}) {
   const telefonoText = data.telefono || "";
 
   const contactLines = [];
-  if (data.nombre) contactLines.push(lineHtml(`<b>${fontStyle("#000000", FONT.nombre, data.nombre)}</b>`));
-  if (data.cargo) contactLines.push(lineHtml(`<i>${fontStyle("#555555", FONT.body, data.cargo)}</i>`, LINE_GAP_AFTER_CARGO));
+  if (data.nombre) contactLines.push(lineHtml(`<b>${fontStyle("#000000", FONT.nombre, data.nombre)}</b>`, LINE_GAP_TIGHT, 1.1));
+  if (data.cargo) contactLines.push(lineHtml(`<i>${fontStyle("#555555", FONT.body, data.cargo)}</i>`, LINE_GAP_AFTER_CARGO, 1.1));
   if (data.email) contactLines.push(lineHtml(linkStyle(`mailto:${data.email}`, data.email)));
   if (telefonoText) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, telefonoText)));
   if (data.web) contactLines.push(lineHtml(linkStyle(webHref(data.web), data.web)));
