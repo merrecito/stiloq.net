@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de firma STILOQ</title>
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
   <header class="header">
@@ -104,14 +104,13 @@
       <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
 
       <div class="outlook-help">
-        <strong>Outlook para Mac — importante</strong>
+        <strong>Mail / Outlook para Mac — importante</strong>
         <ol>
-          <li>Pega la firma en <strong>Configuración → Firmas</strong>, no en un correo nuevo.</li>
+          <li>Mejor: <strong>Abrir para copiar</strong> → en la ventana Cmd+A → Cmd+C → pegar en <strong>Configuración → Firmas</strong> (así no se desconfigura el diseño).</li>
+          <li>O bien <strong>Copiar para Outlook</strong> y Cmd+V en el editor de firmas (no en un correo nuevo).</li>
           <li><strong>Desmarca</strong> «Usar siempre mi tipo de letra predefinido (Helvetica 12)».</li>
-          <li>Pulsa <strong>Copiar para Outlook</strong> y Cmd+V en el editor de firmas.</li>
-          <li><strong>Obligatorio:</strong> tras pegar, clic en el logo → «Tamaño de la imagen» → <strong>190 px</strong> (nunca «Tamaño real»; si no, la firma se desconfigura).</li>
-          <li>Si el logo no aparece: arrastra <code>assets/logo-firma.png</code> al cuadro de firma, o pon la URL pública en «URL del logo».</li>
-          <li>Alternativa: <strong>Abrir para copiar</strong> → Cmd+A → Cmd+C → pegar en Firmas.</li>
+          <li><strong>Obligatorio:</strong> tras pegar, clic en el logo → tamaño fijo <strong>190 px</strong> (nunca «Tamaño real»).</li>
+          <li>Si el logo no aparece: arrastra <code>assets/logo-firma.png</code> al cuadro de firma.</li>
         </ol>
       </div>
 
@@ -133,6 +132,6 @@
 
   <img id="logo-source" src="assets/logo-firma.png" alt="" hidden>
 
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
