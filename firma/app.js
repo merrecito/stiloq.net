@@ -314,7 +314,7 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const logoImg = `<img src="${logoSrc}" alt="STILOQ" width="${imgW}" height="${imgH}" align="left" border="0" hspace="${LOGO_GAP}" vspace="0" style="float:left;width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;vertical-align:top;${imgMarginTop}${imgMarginLeft}margin:0 ${LOGO_GAP}px 0 0;-ms-interpolation-mode:bicubic;">`;
+  const logoImg = `<img src="${logoSrc}" alt="STILOQ" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgMarginTop}${imgMarginLeft}width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
 
@@ -329,13 +329,12 @@ function buildSignatureHtml(data, opts = {}) {
     footerLines.push(footerLineHtml(fontStyle("#2e7d32", FONT.eco, data.mensajeEco)));
   }
 
-  void logoCellW;
-  void textCellW;
   const mainTable = `<!-- Firma STILOQ -->
-<table cellpadding="0" cellspacing="0" border="0" align="left" width="${mainW}" style="border-collapse:collapse;width:${mainW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:Arial,Helvetica,sans-serif;">
+<table cellpadding="0" cellspacing="0" border="0" align="left" width="${mainW}" style="border-collapse:collapse;table-layout:fixed;width:${mainW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:Arial,Helvetica,sans-serif;">
 <tbody>
 <tr>
-<td align="left" valign="top" style="vertical-align:top;padding:0;font-family:Arial,Helvetica,sans-serif;font-size:${FONT.body}px;mso-line-height-rule:exactly;">${logoImg}${contactLines.join("")}</td>
+<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;padding:0 ${LOGO_GAP}px 0 0;vertical-align:top;font-size:0;line-height:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoImg}</td>
+<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;vertical-align:top;padding:0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
 </tr>
 </tbody>
 </table>`;
