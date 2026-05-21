@@ -1,6 +1,6 @@
 const LOGO_PATH = "assets/logo-firma.png";
 const PUBLIC_LOGO_URL = "https://www.stiloq.net/assets/logo-firma.png?v=7";
-const LOGO_CACHE_VERSION = "7";
+const LOGO_CACHE_VERSION = "8";
 let logoNatW = 375;
 let logoNatH = 190;
 const SCALE = 1.05;
@@ -246,6 +246,7 @@ function resolveLogoUrl(data) {
 
 function resolveLogoSrc(data, forCopy) {
   const url = resolveLogoUrl(data);
+  if (forCopy && /^https?:\/\//i.test(url)) return url;
   if (forCopy && logoBase64) return logoBase64;
   if (/^https?:\/\//i.test(url)) return url;
   return logoBase64 || LOGO_PATH;
@@ -295,15 +296,7 @@ function buildSignatureHtml(data, opts = {}) {
   const textCellW = TEXT_COL_W;
   const mainW = logoCellW + textCellW;
   const hasFooter = data.mostrarAvisos || (data.mostrarEco && data.mensajeEco);
-  const totalW = hasFooter ? FOOTER_TABLE_W : mainW;
-  const spacerW = hasFooter ? Math.max(0, totalW - mainW) : 0;
-  const topOff =
-    logoTopInsetPx > 0 && logoNatH > 0
-      ? Math.round(logoTopInsetPx * (imgH / logoNatH))
-      : 0;
-  const visibleImgH = Math.max(1, imgH - topOff);
-  const cropLogo = topOff > 0;
-  const imgMarginLeft = leftOff > 0 ? `margin-left:-${leftOff}px;` : "";
+  void hasFooter;
   const telefonoText = data.telefono || "";
 
   const contactLines = [];
@@ -315,10 +308,7 @@ function buildSignatureHtml(data, opts = {}) {
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
-  const imgMarginTop = cropLogo ? `margin-top:-${topOff}px;` : "";
-  const logoImg = `<img src="${logoSrc}" alt="STILOQ" width="${imgW}" height="${imgH}" border="0" style="display:block;vertical-align:top;${imgMarginTop}${imgMarginLeft}width:${imgW}px;height:${imgH}px;max-width:${imgW}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
-  const logoTdH = cropLogo ? visibleImgH : imgH;
-  const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;"><tr><td align="left" valign="top" width="${logoCellW}" height="${logoTdH}" style="width:${logoCellW}px;height:${logoTdH}px;max-height:${logoTdH}px;vertical-align:top;padding:0;line-height:0;font-size:0;overflow:hidden;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoImg}</td></tr></table>`;
+  const logoImg = `<img src="${logoSrc}" alt="STILOQ" width="${imgW}" height="${imgH}" border="0" style="display:block;width:${imgW}px;height:${imgH}px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;">`;
 
   const footerTopGap = data.direccion1 || data.direccion2 ? 18 : 14;
 
@@ -333,30 +323,21 @@ function buildSignatureHtml(data, opts = {}) {
     footerLines.push(footerLineHtml(fontStyle("#2e7d32", FONT.eco, data.mensajeEco)));
   }
 
-  const colgroup = hasFooter
-    ? `<colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"><col span="1" width="${spacerW}" style="width:${spacerW}px;"></colgroup>`
-    : `<colgroup><col span="1" width="${logoCellW}" style="width:${logoCellW}px;"><col span="1" width="${textCellW}" style="width:${textCellW}px;"></colgroup>`;
-
-  const spacerCell = hasFooter
-    ? `<td width="${spacerW}" style="width:${spacerW}px;min-width:${spacerW}px;font-size:0;line-height:0;padding:0;mso-line-height-rule:exactly;">&nbsp;</td>`
-    : "";
-
-  const footerRow =
-    footerLines.length > 0
-      ? `<tr>
-<td colspan="${hasFooter ? 3 : 2}" align="left" valign="top" style="padding:${footerTopGap}px 0 0 0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${footerLines.join("")}</td>
-</tr>`
-      : "";
-
-  return `<!-- Firma STILOQ -->
-<table align="left" border="0" cellpadding="0" cellspacing="0" width="${totalW}" style="border-collapse:collapse;table-layout:fixed;width:${totalW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;margin:0;padding:0;">
-${colgroup}
+  const mainTable = `<!-- Firma STILOQ -->
+<table cellpadding="0" cellspacing="0" border="0" align="left" width="${mainW}" style="border-collapse:collapse;width:${mainW}px;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:Arial,Helvetica,sans-serif;">
 <tr>
-<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;vertical-align:top!important;padding:0;line-height:0;font-size:0;mso-line-height-rule:exactly;mso-padding-alt:0;">${logoBlock}</td>
-<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;max-width:${textCellW}px;vertical-align:top!important;padding:0;line-height:1.1;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
-${spacerCell}
+<td align="left" valign="top" width="${logoCellW}" style="width:${logoCellW}px;padding:0 ${LOGO_GAP}px 0 0;vertical-align:top;font-size:0;line-height:0;mso-line-height-rule:exactly;">${logoImg}</td>
+<td align="left" valign="top" width="${textCellW}" style="width:${textCellW}px;vertical-align:top;padding:0;font-family:Arial,Helvetica,sans-serif;mso-line-height-rule:exactly;">${contactLines.join("")}</td>
 </tr>
-${footerRow}
+</table>`;
+
+  if (!footerLines.length) return mainTable;
+
+  return `${mainTable}
+<table cellpadding="0" cellspacing="0" border="0" align="left" width="${FOOTER_TABLE_W}" style="border-collapse:collapse;width:${FOOTER_TABLE_W}px;mso-table-lspace:0pt;mso-table-rspace:0pt;font-family:Arial,Helvetica,sans-serif;">
+<tr>
+<td align="left" valign="top" style="padding:${footerTopGap}px 0 0 0;mso-line-height-rule:exactly;">${footerLines.join("")}</td>
+</tr>
 </table>`;
 }
 
@@ -532,21 +513,18 @@ async function copyForOutlook() {
     localStorage.setItem("stiloq_logo_url", PUBLIC_LOGO_URL);
     onFormUpdate();
   }
-  await ensureLogoBase64(getFormData());
   const copyData = getFormData();
   const fragment = buildSignatureHtml(copyData, { forCopy: true });
-  if (!fragment.includes("<img ")) {
+  if (!fragment.includes("https://") || !fragment.includes("<img ")) {
     copyStatus.textContent =
-      "No se pudo incluir el logo. Comprueba la URL o recarga la página y vuelve a copiar.";
+      "Falta la URL del logo. Comprueba https://www.stiloq.net/assets/logo-firma.png y vuelve a copiar.";
     copyStatus.className = "copy-status err";
     return;
   }
   copyStatus.className = "copy-status";
   const cfHtml = buildCfHtml(fragment);
-  const embedded = fragment.includes("data:image");
-  const copyHint = embedded
-    ? "Firma copiada (logo incrustado). Pégala en Outlook → Configuración → Firmas. Desmarca la fuente predefinida."
-    : "Firma copiada (logo por URL). Pégala en Outlook → Configuración → Firmas. Desmarca la fuente predefinida.";
+  const copyHint =
+    "Firma copiada. Pégala en Configuración → Firmas, desmarca la fuente predefinida y pon el logo en ~190 px (no Tamaño real).";
 
   if (copyRichHtml(fragment)) {
     copyStatus.textContent = copyHint;
@@ -573,8 +551,7 @@ async function copyForOutlook() {
   copyStatus.textContent = "Usa «Abrir para copiar» y sigue los pasos de la ventana.";
 }
 
-async function openCopyWindow() {
-  await ensureLogoBase64(getFormData());
+function openCopyWindow() {
   const fragment = buildSignatureHtml(getFormData(), { forCopy: true });
   const html = wrapOutlookDocument(fragment);
   const win = window.open("", "_blank", "width=800,height=640");
