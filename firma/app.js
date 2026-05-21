@@ -278,9 +278,9 @@ function buildSignatureHtml(data, opts = {}) {
   const contactLines = [];
   if (data.nombre) contactLines.push(lineHtml(`<b>${fontStyle("#000000", FONT.nombre, data.nombre)}</b>`, LINE_GAP_TIGHT, 1.1));
   if (data.cargo) contactLines.push(lineHtml(`<i>${fontStyle("#555555", FONT.body, data.cargo)}</i>`, LINE_GAP_AFTER_CARGO, 1.1));
-  if (data.email) contactLines.push(lineHtml(linkStyle(`mailto:${data.email}`, data.email)));
-  if (telefonoText) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, telefonoText)));
-  if (data.web) contactLines.push(lineHtml(linkStyle(webHref(data.web), data.web)));
+  if (data.email) contactLines.push(lineHtml(linkStyle(`mailto:${data.email}`, data.email), LINE_GAP_TIGHT, 1.1));
+  if (telefonoText) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, telefonoText), LINE_GAP_TIGHT, 1.1));
+  if (data.web) contactLines.push(lineHtml(linkStyle(webHref(data.web), data.web), LINE_GAP_TIGHT, 1.1));
   if (data.direccion1) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion1), "6px 0 0 0"));
   if (data.direccion2) contactLines.push(lineHtml(fontStyle("#000000", FONT.body, data.direccion2), "1px 0 0 0"));
 
